@@ -114,5 +114,10 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             MessageBox.Show(datos, "Valores ingresados",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
