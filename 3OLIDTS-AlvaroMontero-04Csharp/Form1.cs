@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO; //Libreria para lectura y escritura de archivos
+using System.Text.RegularExpressions; //Libreria para la validacion de formato de texto
 
 namespace _3OLIDTS_AlvaroMontero_04Csharp
 {
@@ -15,8 +16,60 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
     {
         public Form1()
         {
+            
             InitializeComponent();
+            //Agregar controladores de eventos TextChanged a los campos
+            /*tbEdad.TextChanged += ValidarEdad;
+            tbEstatura.TextChanged += ValidarEstructura;
+            tbTelefono.Leave += ValidarTelefono;
+            tbNombre.TextChanged += ValidarNombre;
+            tbApellidos.TextChanged += ValidarApellidos;*/
+
         }
+        private bool EsEnteroValido(string valor)
+        {
+            int resultado;
+            return int.TryParse(valor, out resultado);
+            //return false;
+        }
+
+        private bool EsDecimalValido(string valor)
+        {
+            decimal resultado;
+            return decimal.TryParse(valor, out resultado);
+        }
+
+        private bool EsEnteroValidode100Digitos(string valor)
+        {
+            long resultado;
+            return long.TryParse(valor, out resultado) && valor.Length == 10;
+        }
+
+        private bool EsTextoValido(string valor)
+        {
+            return Regex.IsMatch(valor, @"^[a-zA-Z\s]+$"); //Solo letras y espacios
+        }
+
+        private void ValidaNombre(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (!EsTextoValido(textbox.Text))
+            {
+                MessageBox.Show("Por favor, ingrese un nombre valido (solo letras y espacios).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textbox.Clear();
+            }
+        }
+
+        private void ValidaApellido(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (!EsTextoValido(textbox.Text))
+            {
+                MessageBox.Show("Por favor, ingrese apellidos validos (solo letras y espacios).", "Error". )
+                textbox.Clear();
+            }
+        }
+
 
         private void lbNombre_Click(object sender, EventArgs e)
         {
