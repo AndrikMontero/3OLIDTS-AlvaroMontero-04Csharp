@@ -19,11 +19,11 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             
             InitializeComponent();
             //Agregar controladores de eventos TextChanged a los campos
-            /*tbEdad.TextChanged += ValidarEdad;
-            tbEstatura.TextChanged += ValidarEstructura;
-            tbTelefono.Leave += ValidarTelefono;
-            tbNombre.TextChanged += ValidarNombre;
-            tbApellidos.TextChanged += ValidarApellidos;*/
+            tbEdad.TextChanged += validarEdad;
+            tbEstatura.TextChanged += validarEstatura;
+            tbTelefono.Leave += validarTelefono;
+            tbNombre.TextChanged += validarNombre;
+            tbApellidos.TextChanged += validarApellido;
 
         }
         private bool EsEnteroValido(string valor)
@@ -39,7 +39,7 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             return decimal.TryParse(valor, out resultado);
         }
 
-        private bool EsEnteroValidode100Digitos(string valor)
+        private bool EsEnteroValido10Digitos(string valor)
         {
             long resultado;
             return long.TryParse(valor, out resultado) && valor.Length == 10;
@@ -50,7 +50,7 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             return Regex.IsMatch(valor, @"^[a-zA-Z\s]+$"); //Solo letras y espacios
         }
 
-        private void ValidaNombre(object sender, EventArgs e)
+        private void validarNombre(object sender, EventArgs e)
         {
             TextBox textbox = (TextBox)sender;
             if (!EsTextoValido(textbox.Text))
@@ -60,13 +60,39 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             }
         }
 
-        private void ValidaApellido(object sender, EventArgs e)
+        private void validarApellido(object sender, EventArgs e)
         {
             TextBox textbox = (TextBox)sender;
             if (!EsTextoValido(textbox.Text))
             {
-                MessageBox.Show("Por favor, ingrese apellidos validos (solo letras y espacios).", "Error". )
-                textbox.Clear();
+                MessageBox.Show("Ingrese valores correctos para el apellido", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void validarEstatura(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (!EsTextoValido(textbox.Text))
+            {
+                MessageBox.Show("Ingrese datos validos para el estatura", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void validarEdad(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (!EsDecimalValido(textbox.Text))
+            {
+                MessageBox.Show("Ingrese datos validos para la edad", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void validarTelefono(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (!EsEnteroValido10Digitos(textbox.Text))
+            {
+                MessageBox.Show("Ingrese datos validos para el numero de telefono", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
