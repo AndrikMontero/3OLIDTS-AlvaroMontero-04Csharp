@@ -72,7 +72,7 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
         private void validarEstatura(object sender, EventArgs e)
         {
             TextBox textbox = (TextBox)sender;
-            if (!EsTextoValido(textbox.Text))
+            if (!EsDecimalValido(textbox.Text))
             {
                 MessageBox.Show("Ingrese datos validos para el estatura", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
