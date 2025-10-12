@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO; //Libreria para lectura y escritura de archivos
 using System.Text.RegularExpressions; //Libreria para la validacion de formato de texto
+using MySql.Data.MySqlClient; //Libreria de conexion a MySQL - Base de datos
 
 namespace _3OLIDTS_AlvaroMontero_04Csharp
 {
     public partial class Form1 : Form
     {
+        //Datos de conexion a MySQL (XAMPP)
+        string conexionSQL = "Server=localhost;Port=3306;Database=Usuario;Uid=root;Pwd=root;";
+        //Metodo para insertar registros
         public Form1()
         {
             
@@ -26,6 +30,30 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             tbApellidos.TextChanged += validarApellido;
 
         }
+
+        private void InsertarRegistro(string nombre, string apellidos, int edad, decimal estatura, string telefono, string genero)
+        {
+            using (MySqlConnection conection = new MySqlConnection(conexionSQL))
+            {
+                conection.Open();
+
+                string insertQuery = "INSERT INTO Registro (Nombre, Apellidos, Edad, Estatura, Telefono, Genero) " +
+                                     "VALUES (@Nombre, @Apellidos, @Edad, @Estatura, @Telefono, @Genero)";
+                using (MySqlCommand command = new MySqlCommand(insertQuery, conection))
+                {
+                    command.Parameters.AddWithValue("@Nombre", nombre);
+                    command.Parameters.AddWithValue("@Apellidos", apellidos);
+                    command.Parameters.AddWithValue("@Edad", edad);
+                    command.Parameters.AddWithValue("@Estatura", estatura);
+                    command.Parameters.AddWithValue("@Telefono", telefono);
+                    command.Parameters.AddWithValue("@Genero", genero);
+
+                    command.ExecuteNonQuery();
+                }
+                conection.Close();
+            }
+        }
+
         private bool EsEnteroValido(string valor)
         {
             int resultado;
@@ -171,28 +199,45 @@ namespace _3OLIDTS_AlvaroMontero_04Csharp
             string genero = "";
             if(rbFemenino.Checked)
             {
-                genero = "Femenino";
+                genero = "Mujer";
             } else if(rbMasculino.Checked)
             {
-                genero = "Masculino";
+                genero = "Hombre";
             }
-            string datos = $"Nombre : {nombres}\n\rApellidos :  {apellidos}\r\n" +
-                $"Edad : {edad}\r\nEstatura : {estatura}\r\nTelefono : {telefono}\r\n" +
-                $"Genero : {genero}\r\n";
-            string ruta ="C:\\Users\\KatPC\\Documents\\Tareastercersemestre\\3OLIDTS2025.txt";
-            //string ruta = @"C:\Users\KatPC\Documents\Tareastercersemestre\3OLIDTS2025.txt";
-            bool archivoExiste = File.Exists(ruta);
-            using (StreamWriter writer = new StreamWriter(ruta, true)) 
+
+            if (EsEnteroValido(edad) && EsDecimalValido(estatura) && EsEnteroValido10Digitos(telefono) && EsTextoValido(nombres) && EsTextoValido(apellidos))
+
             {
-                if (archivoExiste)
+                string datos = $"Nombre : {nombres}\n\rApellidos :  {apellidos}\r\n" +
+                    $"Edad : {edad}\r\nEstatura : {estatura}\r\nTelefono : {telefono}\r\n" +
+                    $"Genero : {genero}\r\n";
+                string ruta = "C:\\Users\\andre\\OneDrive\\Documentos\\Tareastercersemestre\\3OLIDTS2025.txt";
+                //string ruta = @"C:\Users\KatPC\Documents\Tareastercersemestre\3OLIDTS2025.txt";
+                bool archivoExiste = File.Exists(ruta);
+                if (archivoExiste == false)
                 {
-                    writer.WriteLine();
+                    File.WriteAllText(ruta, datos);
                 }
-                writer.WriteLine(datos);
-            }
-            MessageBox.Show(datos, "Valores ingresados",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                {
+                    //Verificar si el archivo existe
+                    using (StreamWriter writer = new StreamWriter(ruta, true))
+                    {
+                        if (archivoExiste)
+                        {
+                            writer.WriteLine();
+                        }
+                        writer.WriteLine(datos);
+                        InsertarRegistro(nombres, apellidos, int.Parse(edad), decimal.Parse(estatura), telefono, genero);
+                        MessageBox.Show("Datos insertados en la Base de Datos: \n\n" + datos, "Informacion BD", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+
+                //MessageBox.Show(datos, "Valores ingresados",
+                //MessageBoxButtons.OK, MessageBoxIcon.Information);
+            } 
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
